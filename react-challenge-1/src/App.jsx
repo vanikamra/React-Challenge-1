@@ -50,22 +50,35 @@ const initialPosts = [
 function App() {
   const [posts, setPosts] = useState(initialPosts);
 
+  function handleDeletePost(idToDelete) {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== idToDelete));
+  }
 
-  function BlogPostDetailRoute() {
+
+
+    function BlogPostDetailRoute() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const post = posts.find((p) => p.id === id);
 
     if (!post) {
       return <p>Blog post not found.</p>;
     }
 
+    function handleDeleteAndNavigate(postId) {
+      handleDeletePost(postId);
+      navigate("/"); // go back to the list after deleting
+    }
+
     return (
       <>
         <BlogPostDetail
+          id={post.id}
           title={post.title}
           content={post.content}
           author={post.author}
           date={post.date}
+          onDelete={handleDeleteAndNavigate}
         />
         <p style={{ marginTop: "1rem" }}>
           <a href={`/posts/${post.id}/edit`}>Edit this post</a>
@@ -73,6 +86,7 @@ function App() {
       </>
     );
   }
+
 
 
   function NewPostRoute() {
